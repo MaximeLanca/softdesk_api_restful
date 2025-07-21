@@ -7,6 +7,7 @@ from django.contrib.auth.password_validation import validate_password
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
+    """Convertit les objets utilisateur en JSON"""
     class Meta:
         model = CustomUser
         fields = ("username","email","password","age") 
@@ -21,9 +22,10 @@ class UserSerializer(serializers.ModelSerializer):
         return make_password(value)
 
 class RegisterSerializer(serializers.ModelSerializer):
+    """Valider et créer un utilisateur"""
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password']
+        fields = ['id', 'username', 'age','email', 'password']
         extra_kwargs = {'password' : {'write_only' : True}}
 
     def create(self, validated_data):
@@ -34,4 +36,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     
     def validate_password(self, value: str) -> str:
         validate_password(value)
+        return value
+    
+    def validate_age(self, value:int) -> int:
+        if value < 15:
+            raise serializers.ValidationError("You can't register if your age is less fifteen.")
         return value

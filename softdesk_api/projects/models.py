@@ -1,10 +1,9 @@
 from django.db import models
-from django import settings
+from django.conf import settings
 
 class Project(models.Model):
     title = models.CharField(max_length=128)
-    user = models.ForeignKey(to=settings.AUTH_USER_MODEL,related_name="owned_projects")
-    time_created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="owned_projects")
 
     def __str__(self):
         return self.title
