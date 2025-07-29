@@ -1,25 +1,20 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .models import Comment
+from issues.models import Issue
 from .serializers import CommentSerializer
 
-class CommentListCreateAPIView(APIView):
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, issue_id):
-        comments = Comment.objects.filter(issue__id=issue_id)
-        serializer = CommentSerializer(comments, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        issue_id = self.kwargs['issue_id']
+        return Comment.objects.filter(issue_id=issue_id)
 
-    def post(self, request, issue_id):
-        data = request.data.copy()
-        data['issue'] = issue_id 
-        serializer = CommentSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+    def perform_create(self, serializer):
+        issue = Issue.objects.get(pk=self.kwargs['issue_id'])
+        serializer.save(issue=issue, assignee=self.request.user)
+
+        
   

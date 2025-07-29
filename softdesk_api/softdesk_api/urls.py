@@ -3,14 +3,34 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from users.views import RegisterView
-from issues.views import IssueListCreateAPIView
-from comments.views import CommentListCreateAPIView
+from projects.views import ProjectViewSet
+from issues.views import IssueViewSet
+from comments.views import CommentViewSet
+
+issue_list_create = IssueViewSet.as_view({
+    'get':'list',
+    'post':'create'
+})
+comment_list_create = CommentViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+
+project_list_create = ProjectViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/signup/', RegisterView.as_view(), name='signup'),
     path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/projects/<int:project_id>/issues/', IssueListCreateAPIView.as_view(), name='create_or_list_issues'),
-    path('api/projects/<int:project_id>/issues/<int:issue_id>/comments', CommentListCreateAPIView.as_view(), name='create_or_list_comments'),
+    path('api/projects/', project_list_create, name='project'),
+    path('api/projects/<int:pk>/', ProjectViewSet.as_view({'get': 'retrieve','put':'update'}), name='project-detail'),
+    path('api/projects/<int:project_id>/issues/', issue_list_create, name='project-issues'),
+    path('api/projects/<int:project_id>/issues/<int:pk>/', IssueViewSet.as_view({'get': 'retrieve'}), name='issue-detail'),
+    path('api/projects/<int:project_id>/issues/<int:issue_id>/comments/',comment_list_create,name='comment-list-create'),
+    path('api/projects/<int:project_id>/issues/<int:issue_id>/comments/<int:pk>/',CommentViewSet.as_view({'get': 'retrieve'}),name='comment-detail'),
 ]   
+

@@ -3,10 +3,9 @@ from issues.models import Issue
 from django.conf import settings
 
 class Comment(models.Model):
-    title = models.CharField(max_length=128)
     description = models.TextField()
-    issue = models.ForeignKey(Issue,on_delete=models.CASCADE,related_name="issues")
-    user = models.OneToOneField(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name="comment")
+    issue = models.ForeignKey(Issue,on_delete=models.CASCADE,related_name="comments")
+    assignee = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name="comments",null=True, blank=True)
 
     def __str__(self):
         return self.title

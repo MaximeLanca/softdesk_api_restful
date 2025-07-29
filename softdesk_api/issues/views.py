@@ -1,25 +1,24 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .models import Issue
+from projects.models import Project
 from .serializers import IssueSerializer
 
-class IssueListCreateAPIView(APIView):
+class IssueViewSet(viewsets.ModelViewSet):
+    """
+    viewsets.ModelViewSet -> donne les actions automatiques (GET, POST, etc.)
+    permission_classes -> Empêche les utilisateurs non connectés d'agir
+    """
+    serializer_class = IssueSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, project_id):
-        issues = Issue.objects.filter(project__id=project_id)
-        serializer = IssueSerializer(issues, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        """self.kwargs['project_id'] contient la valeur <project_id> capturée dans l’URL."""
+        project_id = self.kwargs['project_id']
+        return Issue.objects.filter(project_id=project_id)
 
-    def post(self, request, project_id):
-        data = request.data.copy()
-        data['project'] = project_id 
-        serializer = IssueSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+    def perform_create(self, serializer):
+        project = Project.objects.get(pk=self.kwargs['project_id'])
+        serializer.save(project=project, assignee=self.request.user)
+
     

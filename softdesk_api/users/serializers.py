@@ -10,12 +10,11 @@ class UserSerializer(serializers.ModelSerializer):
     """Convertit les objets utilisateur en JSON"""
     class Meta:
         model = CustomUser
-        fields = ("username","email","password","age") 
+        fields = ("username","email","password","age",'is_data_consent_given','is_contact_consent_given') 
 
     def validate_password(self, value: str) -> str:
         """
         Hash value passed by user.
-
         :param value: password of a user
         :return: a hashed version of the password
         """
@@ -25,7 +24,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     """Valider et créer un utilisateur"""
     class Meta:
         model = User
-        fields = ['id', 'username', 'age','email', 'password']
+        fields = ['id', 'username', 'age','email', 'password','is_data_consent_given','is_contact_consent_given']
         extra_kwargs = {'password' : {'write_only' : True}}
 
     def create(self, validated_data):

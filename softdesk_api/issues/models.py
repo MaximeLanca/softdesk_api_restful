@@ -8,7 +8,7 @@ class Issue(models.Model):
     status = models.CharField(max_length=128)
     tag = models.CharField(max_length=128)
     project = models.ForeignKey(Project,on_delete=models.CASCADE,related_name="issues")
-    assignee = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name="issue")
+    assignee = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name="issue",null=True, blank=True)
 
     def __str__(self):
         return self.title
