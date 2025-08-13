@@ -3,7 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Issue
 from projects.models import Project
 from .serializers import IssueSerializer
-from projects.permission import IsContributorOrSimpleUser
+from projects.permissions import IsContributorOrSimpleUser
+from .permissions import IsIssueAuthorOrProjectContributor
 from django.db import models
 
 class IssueViewSet(viewsets.ModelViewSet):
@@ -25,7 +26,8 @@ class IssueViewSet(viewsets.ModelViewSet):
                 assignee=request.user)
     """
     serializer_class = IssueSerializer
-    permission_classes = [IsAuthenticated, IsContributorOrSimpleUser]
+    permission_classes = [IsAuthenticated, IsContributorOrSimpleUser, IsIssueAuthorOrProjectContributor]
+
 
     def get_queryset(self):
         user=self.request.user

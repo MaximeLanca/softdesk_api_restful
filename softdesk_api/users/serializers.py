@@ -7,7 +7,6 @@ from django.contrib.auth.password_validation import validate_password
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
-    """Convertit les objets utilisateur en JSON"""
     class Meta:
         model = CustomUser
         fields = ("username","email","password","age",'is_data_consent_given','is_contact_consent_given') 
@@ -21,7 +20,6 @@ class UserSerializer(serializers.ModelSerializer):
         return make_password(value)
 
 class RegisterSerializer(serializers.ModelSerializer):
-    """Valider et créer un utilisateur"""
     class Meta:
         model = User
         fields = ['id', 'username', 'age','email', 'password','is_data_consent_given','is_contact_consent_given']

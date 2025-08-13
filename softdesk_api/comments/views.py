@@ -3,12 +3,13 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Comment
 from issues.models import Issue
 from .serializers import CommentSerializer
-from projects.permission import IsContributorOrSimpleUser
+from projects.permissions import IsContributorOrSimpleUser
+from .permissions import IsCommentAuthorOrProjectContributor
 from django.db import models
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated, IsContributorOrSimpleUser]
+    permission_classes = [IsAuthenticated, IsContributorOrSimpleUser, IsCommentAuthorOrProjectContributor]
 
     def get_queryset(self):
         user=self.request.user
