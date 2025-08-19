@@ -1,4 +1,4 @@
-from rest_framework import viewsets, generics, response, status
+from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Project, Contributor
@@ -41,14 +41,14 @@ class ContributorViewSet(viewsets.ModelViewSet):
         contributor = self.get_object()
         if contributor.project.user == contributor.user:
             return Response({"detail": "Impossible de supprimer le créateur du projet."}, status=400)
-        if contributor.user != contributor.project.user :
+        if request.user != contributor.project.user :
             return Response({"detail": "Impossible de supprimer ce contributeur car vous n'etes pas l'auteur du projet."}, status=400)
         contributor.delete()
         return Response({"detail":"Le contributeur a été supprimé."},status=status.HTTP_200_OK)
     
 class ContributorDeleteAPIView(generics.DestroyAPIView):
     queryset = Contributor.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsContributorOrSimpleUser]
 
     def delete (self, request, *args, **kwargs):
         project_id = self.kwargs["project_id"]

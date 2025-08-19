@@ -12,6 +12,4 @@ class Comment(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     created_time = models.DateTimeField(default=timezone.now)
 
-    def __str__(self):
-        return self.title
 

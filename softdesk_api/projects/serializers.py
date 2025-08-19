@@ -13,8 +13,8 @@ class ContributorSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source = 'user.username',read_only=True)
     class Meta():
         model = Contributor
-        fields=("id","user","username","project")
-        read_only_fields = ["id","user","username","project"]
+        fields=("id","username","project")
+        read_only_fields = ["id","username","project"]
 
 class ContributorCreateSerializer(serializers.ModelSerializer):
     class Meta():

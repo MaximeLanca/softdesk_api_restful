@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'issues',
     'projects',
     'users',
+    'django_extensions',
 
 
 ]
@@ -142,3 +143,4 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=500),
 }
+

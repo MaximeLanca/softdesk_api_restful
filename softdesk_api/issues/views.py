@@ -1,4 +1,5 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Issue
 from projects.models import Project
@@ -35,9 +36,12 @@ class IssueViewSet(viewsets.ModelViewSet):
         return Issue.objects.filter(project_id=project_id).filter(
             models.Q(project__user=user) | models.Q(project__contributors__user=user)).distinct()
 
-    def perform_create(self, serializer):
-        project = Project.objects.get(pk=self.kwargs['project_id'])
-        serializer.context['project'] = project
-        serializer.save(project=project, assignee=self.request.user)
+    def create(self, request, *args, **kwargs):
+        project = Project.objects.get(pk=self.kwargs["project_id"])
+        serializer = self.get_serializer(data=request.data, context={"project": project})
+        serializer.is_valid(raise_exception=True)
+        serializer.save(project=project, author=request.user)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     
