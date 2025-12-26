@@ -41,7 +41,7 @@ class ContributorViewSet(viewsets.ModelViewSet):
         contributor = self.get_object()
         if contributor.project.user == contributor.user:
             return Response({"detail": "Impossible de supprimer le créateur du projet."}, status=400)
-        if request.user != contributor.project.user :
+        if request.user!= contributor.project.user :
             return Response({"detail": "Impossible de supprimer ce contributeur car vous n'etes pas l'auteur du projet."}, status=400)
         contributor.delete()
         return Response({"detail":"Le contributeur a été supprimé."},status=status.HTTP_200_OK)
