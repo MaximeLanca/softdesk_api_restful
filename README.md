@@ -1,4 +1,4 @@
-#Softdesk API RESTful
+# Softdesk API RESTful
 
 Ce dépôt contient une API REST fait avec Django.
 Ce guide détaille comment installer, configurer et lancer le projet en local — que ce soit pour du développement, des tests ou de la contribution.
